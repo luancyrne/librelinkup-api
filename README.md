@@ -47,6 +47,7 @@ const LibreLinkUpAPI = require('librelinkup-api');
     }
 })();
 ```
+![image](https://github.com/user-attachments/assets/3b10e2c8-abfd-40cf-9157-ffc8f6c7dc28)
 
 ---
 
