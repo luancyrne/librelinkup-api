@@ -1,0 +1,29 @@
+{
+    "name": "librelinkup-api",
+    "version": "1.0.0",
+    "description": "Node.js API wrapper for LibreLinkUp glucose monitoring",
+    "main": "src/index.js",
+    "scripts": {
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/luancyrne/librelinkup-api.git"
+    },
+    "keywords": [
+        "librelinkup",
+        "glucose",
+        "diabetes",
+        "api",
+        "health"
+    ],
+    "author": "Luan Cyrne",
+    "license": "MIT",
+    "dependencies": {
+        "axios": "^1.4.0",
+        "dotenv": "^16.4.7"
+    },
+    "devDependencies": {
+        "jest": "^29.4.0"
+    }
+}
