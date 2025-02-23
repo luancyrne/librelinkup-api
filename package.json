@@ -4,7 +4,9 @@
     "description": "Node.js API wrapper for LibreLinkUp glucose monitoring",
     "main": "src/index.js",
     "scripts": {
-        "test": "jest"
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage"
     },
     "repository": {
         "type": "git",
