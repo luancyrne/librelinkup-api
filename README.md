@@ -1,7 +1,10 @@
+# LibreLinkUp API 
+[![npm version](https://img.shields.io/npm/v/librelinkup-api.svg)](https://www.npmjs.com/package/librelinkup-api)
+[![npm downloads](https://img.shields.io/npm/dt/librelinkup-api.svg)](https://www.npmjs.com/package/librelinkup-api)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 <details open>
 <summary>🇺🇸 English</summary>
-
-# LibreLinkUp API [![npm](https://img.shields.io/npm/dt/librelinkup-api)](https://www.npmjs.com/package/librelinkup-api)
 
 Unofficial library to integrate with the LibreLinkUp API and programmatically retrieve glucose data. This library allows authentication, connection listing, and glucose data retrieval for specific devices.
 
@@ -36,22 +39,119 @@ Make sure your `.env` file is listed in `.gitignore` to avoid leaking sensitive 
 
 ---
 
-## 💻 Usage Example
+## Quick Start
 
 ```javascript
-const LibreLinkUpAPI = require('librelinkup-api');
+const { LibreLinkUpAPI } = require('librelinkup-api');
 
-(async () => {
-    const api = new LibreLinkUpAPI();
-    await api.login();
-    const connections = await api.getConnections();
-    console.log('Connections:', connections);
+// Create instance with direct credentials
+const api = new LibreLinkUpAPI('email@example.com', 'password');
 
-    if (connections.length > 0) {
-        const glucoseData = await api.getGlucoseData(connections[0].patientId);
-        console.log('Glucose Data:', glucoseData);
-    }
-})();
+// Or use environment variables (LIBRE_EMAIL and LIBRE_PASSWORD)
+const { getConnections, getGlucoseData } = new LibreLinkUpAPI();
+
+// Get all connections
+const connections = await getConnections();
+console.log('Connections:', connections);
+
+// Get glucose data for a specific patient
+const glucoseData = await getGlucoseData(connections[0].patientId);
+console.log('Glucose Data:', glucoseData);
+```
+
+## API Reference
+
+### `new LibreLinkUpAPI([email], [password])`
+
+Creates a new instance of the LibreLinkUp API client.
+
+- **Parameters:**
+  - `email` (optional): Your LibreLinkUp account email. Falls back to `LIBRE_EMAIL` environment variable.
+  - `password` (optional): Your LibreLinkUp account password. Falls back to `LIBRE_PASSWORD` environment variable.
+- **Throws:** `LibreLinkUpError` if credentials are missing or invalid
+
+### `async getConnections()`
+
+Retrieves all connections associated with the account.
+
+- **Returns:** `Promise<Array>` - List of connections with their details
+  ```typescript
+  {
+    id: string;
+    patientId: string;
+    country: string;
+    status: number;
+    firstName: string;
+    lastName: string;
+    targetLow: number;
+    targetHigh: number;
+    glucoseMeasurement: {
+      FactoryTimestamp: string;
+      Timestamp: string;
+      type: number;
+      ValueInMgPerDl: number;
+      Value: number;
+      isHigh: boolean;
+      isLow: boolean;
+    };
+  }[]
+  ```
+
+### `async getGlucoseData(patientId)`
+
+Retrieves glucose data for a specific patient.
+
+- **Parameters:**
+  - `patientId`: String - The patient ID to fetch data for
+- **Returns:** `Promise<Object>` - Detailed glucose data
+  ```typescript
+  {
+    connection: {
+      // Connection details
+    };
+    activeSensors: Array;
+    graphData: [{
+      FactoryTimestamp: string;
+      Timestamp: string;
+      type: number;
+      ValueInMgPerDl: number;
+      Value: number;
+      isHigh: boolean;
+      isLow: boolean;
+    }];
+  }
+  ```
+
+## Error Handling
+
+The library uses a custom `LibreLinkUpError` class that includes:
+- Error message
+- Error code
+- Original error (if applicable)
+
+Common error codes:
+```typescript
+{
+  MISSING_CREDENTIALS: "Email and password are required",
+  AUTH_FAILED: "Authentication failed",
+  AUTH_ERROR: "Error during authentication",
+  MISSING_PATIENT_ID: "Patient ID is required",
+  FETCH_CONNECTIONS_FAILED: "Failed to fetch connections",
+  FETCH_GLUCOSE_FAILED: "Failed to fetch glucose data"
+}
+```
+
+Example error handling:
+```javascript
+try {
+  const connections = await getConnections();
+} catch (error) {
+  if (error.code === 'AUTH_FAILED') {
+    console.error('Authentication failed:', error.message);
+  } else {
+    console.error('Error:', error.message);
+  }
+}
 ```
 
 ---
@@ -106,8 +206,6 @@ This project is an unofficial integration with LibreLinkUp and should be used on
 <details>
 <summary>🇧🇷 Português</summary>
 
-# LibreLinkUp API [![npm](https://img.shields.io/npm/dt/librelinkup-api)](https://www.npmjs.com/package/librelinkup-api)
-
 Biblioteca não oficial para integrar com a API do LibreLinkUp e obter dados de glicemia de forma programática. Esta biblioteca permite autenticação, listagem de conexões e obtenção de dados de glicemia para dispositivos específicos.
 
 ---
@@ -141,22 +239,119 @@ Certifique-se de que o arquivo `.env` está listado no `.gitignore` para evitar 
 
 ---
 
-## 💻 Exemplo de Uso
+## Início Rápido
 
 ```javascript
-const LibreLinkUpAPI = require('librelinkup-api');
+const { LibreLinkUpAPI } = require('librelinkup-api');
 
-(async () => {
-    const api = new LibreLinkUpAPI();
-    await api.login();
-    const connections = await api.getConnections();
-    console.log('Conexões:', connections);
+// Criar instância com credenciais diretas
+const api = new LibreLinkUpAPI('email@example.com', 'senha');
 
-    if (connections.length > 0) {
-        const glucoseData = await api.getGlucoseData(connections[0].patientId);
-        console.log('Dados de Glicemia:', glucoseData);
-    }
-})();
+// Ou usar variáveis de ambiente (LIBRE_EMAIL e LIBRE_PASSWORD)
+const { getConnections, getGlucoseData } = new LibreLinkUpAPI();
+
+// Obter todas as conexões
+const connections = await getConnections();
+console.log('Conexões:', connections);
+
+// Obter dados de glicose para um paciente específico
+const glucoseData = await getGlucoseData(connections[0].patientId);
+console.log('Dados de Glicose:', glucoseData);
+```
+
+## Referência da API
+
+### `new LibreLinkUpAPI([email], [senha])`
+
+Cria uma nova instância do cliente da API LibreLinkUp.
+
+- **Parâmetros:**
+  - `email` (opcional): Seu email da conta LibreLinkUp. Usa `LIBRE_EMAIL` do ambiente se não fornecido.
+  - `senha` (opcional): Sua senha da conta LibreLinkUp. Usa `LIBRE_PASSWORD` do ambiente se não fornecida.
+- **Lança:** `LibreLinkUpError` se as credenciais estiverem faltando ou inválidas
+
+### `async getConnections()`
+
+Recupera todas as conexões associadas à conta.
+
+- **Retorna:** `Promise<Array>` - Lista de conexões com seus detalhes
+  ```typescript
+  {
+    id: string;
+    patientId: string;
+    country: string;
+    status: number;
+    firstName: string;
+    lastName: string;
+    targetLow: number;
+    targetHigh: number;
+    glucoseMeasurement: {
+      FactoryTimestamp: string;
+      Timestamp: string;
+      type: number;
+      ValueInMgPerDl: number;
+      Value: number;
+      isHigh: boolean;
+      isLow: boolean;
+    };
+  }[]
+  ```
+
+### `async getGlucoseData(patientId)`
+
+Recupera dados de glicose para um paciente específico.
+
+- **Parâmetros:**
+  - `patientId`: String - O ID do paciente para buscar os dados
+- **Retorna:** `Promise<Object>` - Dados detalhados de glicose
+  ```typescript
+  {
+    connection: {
+      // Detalhes da conexão
+    };
+    activeSensors: Array;
+    graphData: [{
+      FactoryTimestamp: string;
+      Timestamp: string;
+      type: number;
+      ValueInMgPerDl: number;
+      Value: number;
+      isHigh: boolean;
+      isLow: boolean;
+    }];
+  }
+  ```
+
+## Tratamento de Erros
+
+A biblioteca usa uma classe personalizada `LibreLinkUpError` que inclui:
+- Mensagem de erro
+- Código do erro
+- Erro original (se aplicável)
+
+Códigos de erro comuns:
+```typescript
+{
+  MISSING_CREDENTIALS: "Email e senha são obrigatórios",
+  AUTH_FAILED: "Autenticação falhou",
+  AUTH_ERROR: "Erro durante a autenticação",
+  MISSING_PATIENT_ID: "ID do paciente é obrigatório",
+  FETCH_CONNECTIONS_FAILED: "Falha ao buscar conexões",
+  FETCH_GLUCOSE_FAILED: "Falha ao buscar dados de glicose"
+}
+```
+
+Exemplo de tratamento de erro:
+```javascript
+try {
+  const connections = await getConnections();
+} catch (error) {
+  if (error.code === 'AUTH_FAILED') {
+    console.error('Falha na autenticação:', error.message);
+  } else {
+    console.error('Erro:', error.message);
+  }
+}
 ```
 
 ---
