@@ -1,6 +1,6 @@
 {
     "name": "librelinkup-api",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Node.js API wrapper for LibreLinkUp glucose monitoring",
     "main": "src/index.js",
     "scripts": {

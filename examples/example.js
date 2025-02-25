@@ -1,27 +1,59 @@
-const { LibreLinkUpAPI, LibreLinkUpError } = require('./LibreLinkUpAPI'); require('dotenv').config();
+const { LibreLinkUpAPI, LibreLinkUpError } = require('../src/index');
+require('dotenv').config();
 
-(async () => { try { // Instantiating the API with environment credentials const libreAPI = new LibreLinkUpAPI();
+const API = new LibreLinkUpAPI();
 
-console.log('Authenticating...');
-await libreAPI._ensureAuthenticated();
-console.log('Successfully authenticated!');
+const ExampleGetConnections = async () => {
+  try {
+    console.log('Fetching connections...');
+    const connections = await API.getConnections();
+    console.log('Connections retrieved:', connections);
 
-// Fetching connections
-console.log('Fetching connections...');
-const connections = await libreAPI.getConnections();
-console.log('Connections retrieved:', connections);
-
-if (connections.length === 0) {
-  console.log('No connections found.');
-  return;
+    if (connections.length === 0) {
+      console.log('No connections found.');
+      return;
+    }
+  } catch (error) {
+    if (error instanceof LibreLinkUpError) {
+      console.error(error)
+    }
+  }
 }
 
-// Retrieving the first patient from the connection list
-const patientId = connections[0].patientId;
-console.log(`Fetching glucose data for patient ${patientId}...`);
+const ExampleGetGlucoseData = async () => {
+  try {
+    const glucoseData = await API.getGlucoseData(patientId);
+    console.log('Glucose data retrieved:', glucoseData);
+  } catch (error) {
+    if (error instanceof LibreLinkUpError) {
+      console.error(error)
+    }
+  }
+}
 
-const glucoseData = await libreAPI.getGlucoseData(patientId);
-console.log('Glucose data retrieved:', glucoseData);
+const ExampleGetConnsWithGlucose = async () => {
+  try {
+    console.log('Fetching connections...');
+    const connections = await API.getConnections();
+    console.log('Connections retrieved:', connections);
 
-} catch (error) { if (error instanceof LibreLinkUpError) { console.error(API Error: ${error.message} (Code: ${error.code})); } else { console.error('Unexpected error:', error); } } })();
+    if (connections.length === 0) {
+      console.log('No connections found.');
+      return;
+    }
 
+    const patientId = connections[0].patientId;
+    console.log(`Fetching glucose data for patient ${patientId}...`);
+
+    const glucoseData = await API.getGlucoseData(patientId);
+    console.log('Glucose data retrieved:', glucoseData);
+  } catch (error) {
+    if (error instanceof LibreLinkUpError) {
+      console.error(error)
+    }
+  }
+}
+
+ExampleGetConnections()
+ExampleGetGlucoseData()
+ExampleGetConnsWithGlucose()
